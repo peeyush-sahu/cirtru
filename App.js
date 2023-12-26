@@ -1,20 +1,29 @@
+import { store } from './store';
+import { Provider } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useColorScheme } from 'react-native';
+import { AppNavigator } from './utils/navigation';
+import { PaperProvider } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { CombinedDarkTheme, CombinedDefaultTheme } from './utils/theme';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const App = () => {
+	const scheme = useColorScheme();
+	const theme = scheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+	return (
+		<GestureHandlerRootView style={{ flex: 1 }}>
+			<StatusBar style='auto' />
+			<Provider store={store}>
+				<PaperProvider theme={theme}>
+					<NavigationContainer theme={theme}>
+						<AppNavigator />
+					</NavigationContainer>
+				</PaperProvider>
+			</Provider>
+		</GestureHandlerRootView>
+	);
+};
+
+export default App;
