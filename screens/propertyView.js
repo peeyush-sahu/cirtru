@@ -52,8 +52,11 @@ const PropertyView = () => {
 	const setMarkers = () => {
 		setTimeout(() => {
 			mapRef.current.fitToSuppliedMarkers([propertyDetails?._id]);
-			markerRef.current.showCallout();
 		}, 1000);
+	};
+
+	const showCallout = () => {
+		markerRef.current.showCallout();
 	};
 
 	return (
@@ -139,6 +142,7 @@ const PropertyView = () => {
 						onMapReady={setMarkers}
 						showsUserLocation={false}
 						showsMyLocationButton={false}
+						onRegionChangeComplete={showCallout}
 						style={{ width: '100%', height: 300 }}
 					>
 						<Marker
