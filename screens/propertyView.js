@@ -1,9 +1,9 @@
 import * as Linking from 'expo-linking';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import Carousel from 'react-native-reanimated-carousel';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Appbar, Avatar, Card, Text, useTheme } from 'react-native-paper';
+import { Avatar, Button, Card, Text, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import {
 	Image,
@@ -30,16 +30,17 @@ const PropertyView = () => {
 		latitude: propertyDetails?.mresult?.center[1]
 	};
 
-	const getTitle = () => {
-		return (
-			<View style={{ width: '100%' }}>
-				<Text variant='titleLarge'>${propertyDetails?.rent}</Text>
-				<Text variant='bodyMedium' numberOfLines={1}>
-					{propertyDetails?.location}
-				</Text>
-			</View>
-		);
+	const handleShareLink = () => {
+		Share.share({
+			message: `https://cirtru.com/listings/${propertyDetails?._id}`
+		});
 	};
+
+	useEffect(() => {
+		navigation.setOptions({
+			headerTitle: propertyDetails?.location
+		});
+	}, []);
 
 	const handleOpenNativeMaps = () => {
 		const url = Platform.select({
@@ -62,112 +63,104 @@ const PropertyView = () => {
 		}, 1000);
 	};
 
-	const handleShareLink = () => {
-		Share.share({
-			message: `https://cirtru.com/listings/${propertyDetails?._id}`
-		});
-	};
-
 	return (
-		<>
-			<Appbar.Header mode='small'>
-				<Appbar.BackAction onPress={() => navigation.goBack()} />
-				<Appbar.Content title={getTitle()} />
-				<Appbar.Action icon='share-variant' onPress={handleShareLink} />
-			</Appbar.Header>
-			<ScrollView
-				contentContainerStyle={{ flex: 1 }}
-				showsVerticalScrollIndicator={false}
-				keyboardShouldPersistTaps='always'
-			>
-				{propertyDetails?.images?.thumbs.length ? (
-					<Carousel
-						loop
-						width={width}
-						height={width / 2}
-						data={propertyDetails?.images?.thumbs}
-						renderItem={({ item }) => (
-							<Image
-								source={{
-									uri: appendHttps ? item : `https:${item}`
-								}}
-								resizeMode='cover'
-								style={{
-									width,
-									height: width / 2
-								}}
-							/>
-						)}
-					/>
-				) : (
-					<View
-						style={{
-							backgroundColor: theme.colors.surfaceVariant,
-							height: width / 2,
-							width,
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}
-					>
-						<MaterialCommunityIcons
-							name='home-city-outline'
-							size={48}
-							color='#888888'
+		<ScrollView
+			contentContainerStyle={{ flex: 1 }}
+			showsVerticalScrollIndicator={false}
+			keyboardShouldPersistTaps='always'
+		>
+			{propertyDetails?.images?.thumbs.length ? (
+				<Carousel
+					loop
+					width={width}
+					height={width / 2}
+					data={propertyDetails?.images?.thumbs}
+					renderItem={({ item }) => (
+						<Image
+							source={{
+								uri: appendHttps ? item : `https:${item}`
+							}}
+							resizeMode='cover'
+							style={{
+								width,
+								height: width / 2
+							}}
 						/>
-					</View>
-				)}
-				<View style={{ padding: 16 }}>
-					<Text variant='titleLarge'>${propertyDetails?.rent}</Text>
-					<Text variant='titleMedium'>
-						{propertyDetails?.location}
-					</Text>
-					<View
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							marginVertical: 16
-						}}
-					>
-						<Text variant='titleMedium'>
-							Listed By {propertyDetails?.userName}
-						</Text>
-						<Avatar.Text
-							size={32}
-							label={propertyDetails?.userName.split('')[0]}
-						/>
-					</View>
-				</View>
-				<Card
-					mode='outlined'
-					style={{ marginHorizontal: 16, overflow: 'hidden' }}
+					)}
+				/>
+			) : (
+				<View
+					style={{
+						backgroundColor: theme.colors.surfaceVariant,
+						height: width / 2,
+						width,
+						justifyContent: 'center',
+						alignItems: 'center'
+					}}
 				>
-					<MapView
-						ref={mapRef}
-						loadingEnabled
-						maxZoomLevel={15}
-						showsCompass={false}
-						toolbarEnabled={false}
-						onMapReady={setMarkers}
-						showsUserLocation={false}
-						showsMyLocationButton={false}
-						style={{ width: '100%', height: 300 }}
-					>
-						<Marker
-							ref={markerRef}
-							coordinate={coords}
-							pinColor={theme.colors.primary}
-							identifier={propertyDetails?._id}
-							onCalloutPress={handleOpenNativeMaps}
-							title={Platform.select({
-								ios: 'Tap here to open in Maps',
-								android: 'Tap here to open in Google Maps'
-							})}
-						/>
-					</MapView>
-				</Card>
-			</ScrollView>
-		</>
+					<MaterialCommunityIcons
+						name='home-city-outline'
+						size={48}
+						color='#888888'
+					/>
+				</View>
+			)}
+			<View style={{ padding: 16 }}>
+				<Text variant='titleLarge'>${propertyDetails?.rent}</Text>
+				<Text variant='titleMedium'>{propertyDetails?.location}</Text>
+				<View
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+						justifyContent: 'space-between',
+						marginVertical: 16
+					}}
+				>
+					<Text variant='titleMedium'>
+						Listed By {propertyDetails?.userName}
+					</Text>
+					<Avatar.Text
+						size={32}
+						label={propertyDetails?.userName.split('')[0]}
+					/>
+				</View>
+				<Button
+					mode='outlined'
+					icon='share-variant'
+					onPress={handleShareLink}
+				>
+					Share
+				</Button>
+			</View>
+			<Card
+				mode='outlined'
+				style={{ marginHorizontal: 16, overflow: 'hidden' }}
+			>
+				<MapView
+					ref={mapRef}
+					loadingEnabled
+					maxZoomLevel={15}
+					showsCompass={false}
+					toolbarEnabled={false}
+					onMapReady={setMarkers}
+					showsUserLocation={false}
+					showsMyLocationButton={false}
+					style={{ width: '100%', height: 300 }}
+				>
+					<Marker
+						ref={markerRef}
+						coordinate={coords}
+						pinColor={theme.colors.primary}
+						identifier={propertyDetails?._id}
+						onCalloutPress={handleOpenNativeMaps}
+						title={Platform.select({
+							ios: 'Tap here to open in Maps',
+							android: 'Tap here to open in Google Maps'
+						})}
+					/>
+				</MapView>
+			</Card>
+		</ScrollView>
 	);
 };
 

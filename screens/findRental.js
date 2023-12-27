@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import NoData from '../components/noData';
 import RoomList from '../components/roomList';
 import HouseList from '../components/houseList';
-import { Appbar, useTheme } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCityDataMutation } from '../store/services';
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +12,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 const Tab = createMaterialTopTabNavigator();
 
 const FindRental = () => {
-	const theme = useTheme();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const { location } = useSelector(state => state.common);
@@ -27,31 +25,23 @@ const FindRental = () => {
 			};
 			cityData(payload)
 				.unwrap()
-				.then(response => dispatch(setLocation(response)));
+				.then(response => {
+					dispatch(setLocation(response));
+					navigation.setOptions({
+						title: `${response?.mapbox_result?.place_name}`
+					});
+				});
 		}
 	}, []);
 
 	return (
 		<>
-			<Appbar.Header mode='small'>
-				{navigation.canGoBack && (
-					<Appbar.BackAction onPress={() => navigation.goBack()} />
-				)}
-				<Appbar.Content
-					title={
-						location?.mapbox_result?.place_name ||
-						'Find Houses & Rooms'
-					}
-					style={{ paddingRight: 16 }}
-				/>
-			</Appbar.Header>
 			{location?.mapbox_result ? (
 				<Tab.Navigator
 					screenOptions={({ route }) => ({
 						lazy: true,
 						swipeEnabled: false,
 						tabBarPressColor: 'transparent',
-						tabBarStyle: { backgroundColor: theme.colors.surface },
 						tabBarLabelStyle: {
 							fontWeight: '600',
 							textTransform: 'capitalize'
