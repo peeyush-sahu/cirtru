@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import NoData from '../components/noData';
 import RoomList from '../components/roomList';
 import HouseList from '../components/houseList';
 import { Appbar, useTheme } from 'react-native-paper';
@@ -41,10 +42,7 @@ const FindRental = () => {
 						location?.mapbox_result?.place_name ||
 						'Find Houses & Rooms'
 					}
-				/>
-				<Appbar.Action
-					icon='filter-remove-outline'
-					onPress={() => {}}
+					style={{ paddingRight: 16 }}
 				/>
 			</Appbar.Header>
 			{location?.mapbox_result ? (
@@ -76,7 +74,13 @@ const FindRental = () => {
 					<PropertyLoader />
 					<PropertyLoader />
 				</>
-			) : null}
+			) : (
+				<NoData
+					buttonText={'Choose a City'}
+					image={require('../assets/no-location.png')}
+					onPress={() => navigation.navigate('SearchCity')}
+				/>
+			)}
 		</>
 	);
 };

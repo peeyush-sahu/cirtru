@@ -38,10 +38,6 @@ const SearchCity = () => {
 	return (
 		<View style={{ flex: 1 }}>
 			<Appbar.Header mode='small'>
-				<Appbar.Action
-					icon='close-circle'
-					onPress={() => navigation.goBack()}
-				/>
 				<Appbar.Content
 					title={
 						<Searchbar
@@ -53,6 +49,10 @@ const SearchCity = () => {
 							placeholder='Where are you moving?'
 						/>
 					}
+				/>
+				<Appbar.Action
+					icon='close-circle'
+					onPress={() => navigation.goBack()}
 				/>
 			</Appbar.Header>
 			<ScrollView

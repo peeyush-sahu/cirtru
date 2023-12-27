@@ -92,6 +92,34 @@ const initialState = {
 			stateName: 'dc',
 			img: 'https://static.cirtru.com/cirtru/webImgs/city_images/washington_dc_square.jpg'
 		}
+	],
+	filters: [
+		{
+			label: 'Heating',
+			key: 'heating',
+			status: 'unchecked',
+			type: 'amenities'
+		},
+		{
+			label: 'Air Conditioning',
+			key: 'ac',
+			status: 'unchecked',
+			type: 'amenities'
+		},
+		{
+			label: 'Washer/Dryer',
+			key: 'laundry',
+			status: 'unchecked',
+			type: 'amenities'
+		},
+		{ label: 'Cats Ok', key: 'cats', status: 'unchecked', type: 'rules' },
+		{ label: 'Dogs Ok', key: 'dogs', status: 'unchecked', type: 'rules' },
+		{
+			label: 'Smoking Ok',
+			key: 'smoking',
+			status: 'unchecked',
+			type: 'rules'
+		}
 	]
 };
 
@@ -109,10 +137,15 @@ const commonSlice = createSlice({
 
 		setHouses: (state, action) => {
 			state.houses = action.payload;
+		},
+
+		setFilters: (state, action) => {
+			state.filters = action.payload || initialFilters;
 		}
 	}
 });
 
 export default commonSlice.reducer;
 
-export const { setLocation, setRooms, setHouses } = commonSlice.actions;
+export const { setLocation, setRooms, setHouses, setFilters } =
+	commonSlice.actions;

@@ -7,6 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FlatList, InteractionManager } from 'react-native';
 import { setHouses } from '../store/reducers/common.reducer';
 import { usePropertiesListMutation } from '../store/services';
+import FilterButton from './filterButton';
 
 const HouseList = () => {
 	const dispatch = useDispatch();
@@ -57,7 +58,9 @@ const HouseList = () => {
 			data={houses.data}
 			initialNumToRender={4}
 			maxToRenderPerBatch={4}
+			stickyHeaderIndices={[0]}
 			keyExtractor={item => item?._id}
+			ListHeaderComponent={<FilterButton />}
 			showsVerticalScrollIndicator={false}
 			renderItem={({ item }) => (
 				<PropertyCard rowItem={item} propertyType='houses' />

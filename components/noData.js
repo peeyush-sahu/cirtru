@@ -1,7 +1,7 @@
 import { Image, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 
-const NoData = ({ message, image }) => {
+const NoData = ({ message, image, buttonText, onPress }) => {
 	return (
 		<View
 			style={{
@@ -15,9 +15,15 @@ const NoData = ({ message, image }) => {
 				source={image}
 				style={{ width: 200, height: 200, marginBottom: 36 }}
 			/>
-			<Text variant='titleMedium' style={{ textAlign: 'center' }}>
-				{message}
-			</Text>
+			{buttonText ? (
+				<Button mode='contained' onPress={onPress}>
+					{buttonText}
+				</Button>
+			) : (
+				<Text variant='titleMedium' style={{ textAlign: 'center' }}>
+					{message}
+				</Text>
+			)}
 		</View>
 	);
 };

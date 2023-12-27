@@ -10,7 +10,8 @@ import {
 	Platform,
 	ScrollView,
 	View,
-	useWindowDimensions
+	useWindowDimensions,
+	Share
 } from 'react-native';
 
 const PropertyView = () => {
@@ -46,17 +47,25 @@ const PropertyView = () => {
 			android: `geo://?q=${coords.latitude},${coords.longitude}`
 		});
 
-		Linking.openURL(url);
+		if (Platform.OS !== 'web') {
+			Linking.openURL(url);
+		}
 	};
 
 	const setMarkers = () => {
 		setTimeout(() => {
 			mapRef.current.fitToSuppliedMarkers([propertyDetails?._id]);
+
+			setTimeout(() => {
+				markerRef.current.showCallout();
+			}, 1000);
 		}, 1000);
 	};
 
-	const showCallout = () => {
-		markerRef.current.showCallout();
+	const handleShareLink = () => {
+		Share.share({
+			message: `https://cirtru.com/listings/${propertyDetails?._id}`
+		});
 	};
 
 	return (
@@ -64,7 +73,7 @@ const PropertyView = () => {
 			<Appbar.Header mode='small'>
 				<Appbar.BackAction onPress={() => navigation.goBack()} />
 				<Appbar.Content title={getTitle()} />
-				<Appbar.Action icon='share-variant' />
+				<Appbar.Action icon='share-variant' onPress={handleShareLink} />
 			</Appbar.Header>
 			<ScrollView
 				contentContainerStyle={{ flex: 1 }}
@@ -142,7 +151,6 @@ const PropertyView = () => {
 						onMapReady={setMarkers}
 						showsUserLocation={false}
 						showsMyLocationButton={false}
-						onRegionChangeComplete={showCallout}
 						style={{ width: '100%', height: 300 }}
 					>
 						<Marker
@@ -150,9 +158,11 @@ const PropertyView = () => {
 							coordinate={coords}
 							pinColor={theme.colors.primary}
 							identifier={propertyDetails?._id}
-							title={`$${propertyDetails?.rent}`}
 							onCalloutPress={handleOpenNativeMaps}
-							description={`${propertyDetails?.location}`}
+							title={Platform.select({
+								ios: 'Tap here to open in Maps',
+								android: 'Tap here to open in Google Maps'
+							})}
 						/>
 					</MapView>
 				</Card>
