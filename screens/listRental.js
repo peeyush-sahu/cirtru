@@ -1,13 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 import Counter from '../components/counter';
 import * as ImagePicker from 'expo-image-picker';
 import { listOfAmeneties } from '../utils/constants';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Divider, List, Searchbar, Switch, Text } from 'react-native-paper';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+	Button,
+	Divider,
+	List,
+	Switch,
+	Text,
+	TextInput
+} from 'react-native-paper';
 
 const ListRental = () => {
+	const route = useRoute();
+	const navigation = useNavigation();
 	const [images, setImages] = useState(null);
+	const [location, setLocation] = useState('');
+	const [date, setDate] = useState(new Date());
+	const [isEntirePlace, setIsEntirePlace] = useState(false);
+	const [showDatePicker, setShowDatePicker] = useState(false);
 
 	const handleSelectImages = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -15,18 +29,40 @@ const ListRental = () => {
 			allowsMultipleSelection: true,
 			mediaTypes: ImagePicker.MediaTypeOptions.Images
 		});
+	};
 
-		console.log(result);
+	useEffect(() => {
+		if (route.params?.cityName) {
+			setLocation(`${route.params?.cityName}, ${route.params?.state}`);
+		}
+	}, [route.params]);
+
+	const handleDateChange = (e, val) => {
+		setDate(new Date(val));
+		setShowDatePicker(false);
 	};
 
 	return (
 		<ScrollView keyboardShouldPersistTaps='always' style={{ flex: 1 }}>
 			<List.Section>
 				<List.Subheader>Where's your place located?</List.Subheader>
-				<Searchbar
-					placeholder='e.g. 123 Main Street'
-					style={{ marginHorizontal: 16, marginBottom: 12 }}
-				/>
+				<Button
+					mode='outlined'
+					style={{
+						height: 48,
+						justifyContent: 'center',
+						marginHorizontal: 16,
+						marginBottom: 12,
+						borderRadius: 56
+					}}
+					onPress={() =>
+						navigation.navigate('SearchCity', {
+							redirectTo: 'ListProperty'
+						})
+					}
+				>
+					{location || 'e.g. 123 Main Street'}
+				</Button>
 			</List.Section>
 			<Divider />
 			<List.Section>
@@ -34,12 +70,28 @@ const ListRental = () => {
 				<List.Item
 					title='Room'
 					description='Private or shared rooms'
-					right={props => <Switch {...props} />}
+					right={props => (
+						<Switch
+							{...props}
+							value={!isEntirePlace}
+							onValueChange={() =>
+								setIsEntirePlace(!isEntirePlace)
+							}
+						/>
+					)}
 					left={props => <List.Icon {...props} icon='sofa-single' />}
 				/>
 				<List.Item
 					title='Entire place'
-					right={props => <Switch {...props} />}
+					right={props => (
+						<Switch
+							{...props}
+							value={isEntirePlace}
+							onValueChange={() =>
+								setIsEntirePlace(!isEntirePlace)
+							}
+						/>
+					)}
 					description='A whole house, apartment or studio'
 					left={props => <List.Icon {...props} icon='home-city' />}
 				/>
@@ -63,6 +115,45 @@ const ListRental = () => {
 					right={props => <Counter {...props} />}
 				/>
 			</List.Section>
+			<Divider />
+			{isEntirePlace ? (
+				<>
+					<List.Section>
+						<List.Subheader>Details</List.Subheader>
+						<List.Item
+							title='Rent (per month)'
+							left={props => (
+								<List.Icon {...props} icon='check-all' />
+							)}
+							right={props => (
+								<TextInput
+									{...props}
+									mode='outlined'
+									left={
+										<TextInput.Icon icon='currency-usd' />
+									}
+								/>
+							)}
+						/>
+						<List.Item
+							title='Deposit (one time)'
+							left={props => (
+								<List.Icon {...props} icon='piggy-bank' />
+							)}
+							right={props => (
+								<TextInput
+									{...props}
+									mode='outlined'
+									left={
+										<TextInput.Icon icon='currency-usd' />
+									}
+								/>
+							)}
+						/>
+					</List.Section>
+					<Divider />
+				</>
+			) : null}
 			<List.Section>
 				<List.Subheader>Amenities</List.Subheader>
 				{listOfAmeneties.map(a => (

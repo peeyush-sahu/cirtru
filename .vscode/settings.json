@@ -1,7 +1,7 @@
 {
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.removeUnusedImports": true
+        "source.fixAll.eslint": "explicit",
+        "source.removeUnusedImports": "explicit"
     },
     "[javascriptreact]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"

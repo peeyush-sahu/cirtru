@@ -17,8 +17,8 @@
     "@reduxjs/toolkit": "^2.0.1",
     "dayjs": "^1.11.10",
     "expo": "~49.0.15",
+    "expo-image-picker": "~14.3.2",
     "expo-linking": "~5.0.2",
-    "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-content-loader": "^6.2.1",
     "react-dom": "18.2.0",
@@ -35,8 +35,7 @@
     "react-native-svg": "13.9.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "~0.19.6",
-    "react-redux": "^9.0.4",
-    "expo-image-picker": "~14.3.2"
+    "react-redux": "^9.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

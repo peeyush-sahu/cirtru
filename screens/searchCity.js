@@ -2,12 +2,13 @@ import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '../utils/hooks';
 import { ScrollView, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Appbar, List, Searchbar } from 'react-native-paper';
-import { useLazyGetLocationsQuery } from '../store/services/misc';
 import { setLocation } from '../store/reducers/common.reducer';
+import { useLazyGetLocationsQuery } from '../store/services/misc';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const SearchCity = () => {
+	const route = useRoute();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const [query, setQuery] = useState('');
@@ -25,14 +26,23 @@ const SearchCity = () => {
 
 	const handleShowProperties = item => {
 		const place = item?.place_name.split(',');
-		dispatch(
-			setLocation({
+
+		if (route.params?.redirectTo) {
+			navigation.navigate(route.params?.redirectTo, {
 				cityName: place[0],
 				state: place[1].trim(),
 				mapbox_result: item
-			})
-		);
-		navigation.navigate('Listing');
+			});
+		} else {
+			dispatch(
+				setLocation({
+					cityName: place[0],
+					state: place[1].trim(),
+					mapbox_result: item
+				})
+			);
+			navigation.navigate('Listing');
+		}
 	};
 
 	return (

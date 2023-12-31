@@ -1,130 +1,76 @@
-import { Text, Button } from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { setLocation } from '../store/reducers/common.reducer';
-import Animated, { FadeInLeft, FadeInRight } from 'react-native-reanimated';
-import {
-	Image,
-	Platform,
-	Pressable,
-	ScrollView,
-	StyleSheet,
-	View
-} from 'react-native';
+import CityItem from '../components/cityItem';
+import { Appbar, Searchbar, Text } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import { FlatList, ScrollView, View, useWindowDimensions } from 'react-native';
 
 const Home = () => {
-	const dispatch = useDispatch();
-	const navigation = useNavigation();
+	const { width } = useWindowDimensions();
 	const { topCities, location } = useSelector(state => state.common);
+	const tempTopCities = [...topCities];
+	let cityArray = [];
+	while (tempTopCities.length > 0) cityArray.push(tempTopCities.splice(0, 2));
+
+	const renderRow = (city, viewType) => {
+		return (
+			<View style={{ width: width / 2 - 16 }}>
+				<CityItem city={city[0]} viewType={viewType} />
+				{city.length > 1 ? (
+					<CityItem city={city[1]} viewType={viewType} />
+				) : null}
+			</View>
+		);
+	};
 
 	return (
-		<View style={styles.container}>
-			<ScrollView showsVerticalScrollIndicator={false}>
-				<Animated.Text
-					entering={FadeInLeft}
-					style={{ textAlign: 'center' }}
-				>
-					<Text variant='titleMedium' style={{ textAlign: 'center' }}>
-						Rent Smartly
-					</Text>
-				</Animated.Text>
-				<Animated.Text
-					entering={FadeInRight}
-					style={{ textAlign: 'center' }}
-				>
-					<Text
-						variant='headlineLarge'
-						style={{ textAlign: 'center' }}
-					>
-						Houses & Rooms
-					</Text>
-				</Animated.Text>
-				<Text
-					variant='bodyLarge'
-					style={{ marginTop: 8, textAlign: 'center' }}
-				>
-					Find rooms for rent in 10,000+ cities in USA
-				</Text>
-				<Button
-					icon='magnify'
-					mode='outlined'
-					style={{ marginVertical: 24 }}
-					onPress={() => navigation.navigate('SearchCity')}
-				>
-					{location?.mapbox_result?.place_name ||
-						'Where are you moving?'}
-				</Button>
+		<>
+			<Appbar.Header mode='small'>
+				<Appbar.Content
+					title={
+						<Searchbar
+							style={{ width: width - 32 }}
+							placeholder={
+								location?.mapbox_result?.place_name ||
+								'Where are you moving?'
+							}
+						/>
+					}
+				/>
+			</Appbar.Header>
 
-				<View style={styles.citiesContainer}>
-					{topCities.map((city, index) => (
-						<Pressable
-							key={index}
-							style={styles.cityContainer}
-							onPress={() => {
-								dispatch(
-									setLocation({
-										cityName: city?.cityName,
-										state: city?.stateName
-									})
-								);
-								navigation.navigate('Listing');
-							}}
-						>
-							<Image
-								source={{ uri: city?.img }}
-								style={styles.cityImage}
-								resizeMode='cover'
-							/>
-							<Text
-								variant='labelLarge'
-								style={{ flex: 1 }}
-								ellipsizeMode='tail'
-								numberOfLines={1}
-							>
-								{city?.name}
-							</Text>
-						</Pressable>
-					))}
-				</View>
-				<Button
-					icon='home-search'
-					mode='contained'
-					style={{ marginVertical: 16 }}
-					onPress={() => navigation.navigate('SearchCity')}
-				>
-					Start your search
-				</Button>
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{
+					alignItems: 'center',
+					padding: 16
+				}}
+			>
+				<Text variant='titleLarge' style={{ paddingTop: 24 }}>
+					Get your rental rooms
+				</Text>
+				<Text variant='bodyMedium'>
+					Find rooms in more than 10,000 cities in the USA
+				</Text>
+				<FlatList
+					data={cityArray}
+					horizontal={true}
+					style={{ marginVertical: 24 }}
+					showsHorizontalScrollIndicator={false}
+					renderItem={({ item }) => renderRow(item, 'rooms')}
+				/>
+				<Text variant='titleLarge'>Get your rental houses</Text>
+				<Text variant='bodyMedium'>
+					Find houses in more than 10,000 cities in the USA
+				</Text>
+				<FlatList
+					data={cityArray}
+					horizontal={true}
+					style={{ marginVertical: 24 }}
+					showsHorizontalScrollIndicator={false}
+					renderItem={({ item }) => renderRow(item, 'houses')}
+				/>
 			</ScrollView>
-		</View>
+		</>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingTop: Platform.OS === 'web' ? 16 : 56,
-		paddingHorizontal: 16
-	},
-
-	citiesContainer: {
-		marginVertical: 16,
-		flexDirection: 'row',
-		flexWrap: 'wrap'
-	},
-
-	cityContainer: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		width: '50%',
-		marginBottom: 16
-	},
-
-	cityImage: {
-		height: 72,
-		width: 72,
-		borderRadius: 12,
-		marginRight: 8
-	}
-});
 
 export default Home;

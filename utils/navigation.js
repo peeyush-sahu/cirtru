@@ -34,7 +34,7 @@ export const HomeTabs = () => {
 						iconName = 'playlist-plus';
 					} else if (route.name === 'Account') {
 						iconName = focused ? 'account' : 'account-outline';
-					} else if (route.name === 'Settings') {
+					} else if (route.name === 'Setting') {
 						iconName = focused ? 'cog' : 'cog-outline';
 					}
 
@@ -81,7 +81,17 @@ export const HomeTabs = () => {
 					}
 				}}
 			/>
-			<Tab.Screen name='Settings' component={Settings} />
+			<Tab.Screen
+				name='Setting'
+				component={Settings}
+				options={{ title: 'Settings' }}
+				listeners={{
+					tabPress: e => {
+						e.preventDefault();
+						navigation.navigate('Settings');
+					}
+				}}
+			/>
 		</Tab.Navigator>
 	);
 };
@@ -131,6 +141,11 @@ export const AppNavigator = () => {
 				name='ListProperty'
 				component={ListRental}
 				options={{ title: 'List your rental' }}
+			/>
+			<AppStack.Screen
+				name='Settings'
+				component={Settings}
+				options={{ title: 'Settings' }}
 			/>
 		</AppStack.Navigator>
 	);
