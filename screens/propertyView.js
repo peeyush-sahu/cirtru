@@ -1,9 +1,9 @@
 import * as Linking from 'expo-linking';
+import { WebView } from 'react-native-webview';
 import { useEffect, useRef, useState } from 'react';
-import MapView, { Marker } from 'react-native-maps';
 import Carousel from 'react-native-reanimated-carousel';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Avatar, Button, Card, Text, useTheme } from 'react-native-paper';
+import { Avatar, Button, Text, Card, useTheme } from 'react-native-paper';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import {
 	Image,
@@ -53,18 +53,51 @@ const PropertyView = () => {
 		}
 	};
 
-	const setMarkers = () => {
-		setTimeout(() => {
-			mapRef.current.fitToSuppliedMarkers([propertyDetails?._id]);
+	const mapHTML = ({ center }) =>
+		`<!DOCTYPE html>
+			<html>
+			<head>
+				<meta charset="utf-8">
+				<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+				<link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+				<script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+				<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+				<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+				<style>
+				body {
+					margin: 0;
+					padding: 0;
+				}
 
-			setTimeout(() => {
-				markerRef.current.showCallout();
-			}, 1000);
-		}, 1000);
-	};
+				#map {
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					width: 100%;
+				}
+				</style>
+			</head>
+			<body>
+				<div id="map"></div>
+				<script>
+					mapboxgl.accessToken = "pk.eyJ1IjoiY2lydHJ1IiwiYSI6ImNrcGtwczdncTAzcXgyb24yM290OGMxZXkifQ.v-wiEEXFtxmsBBajCeQaAQ";
+					const map = new mapboxgl.Map({
+						container: 'map',
+						center: [-71.0715, 42.3581],
+						zoom: 13,
+						style: 'mapbox://styles/mapbox/outdoors-v12'
+					});
+					const marker = new mapboxgl.Marker()
+						.setLngLat([-71.0715, 42.3581])
+						.addTo(map);
+				</script>
+			</body>
+			</html>
+`;
 
 	return (
 		<ScrollView
+			scrollEnabled
 			contentContainerStyle={{ flex: 1 }}
 			showsVerticalScrollIndicator={false}
 			keyboardShouldPersistTaps='always'
@@ -134,31 +167,22 @@ const PropertyView = () => {
 			</View>
 			<Card
 				mode='outlined'
-				style={{ marginHorizontal: 16, overflow: 'hidden' }}
+				style={{
+					marginHorizontal: 16,
+
+					overflow: 'hidden'
+				}}
 			>
-				<MapView
-					ref={mapRef}
-					loadingEnabled
-					maxZoomLevel={15}
-					showsCompass={false}
-					toolbarEnabled={false}
-					onMapReady={setMarkers}
-					showsUserLocation={false}
-					showsMyLocationButton={false}
-					style={{ width: '100%', height: 300 }}
-				>
-					<Marker
-						ref={markerRef}
-						coordinate={coords}
-						pinColor={theme.colors.primary}
-						identifier={propertyDetails?._id}
-						onCalloutPress={handleOpenNativeMaps}
-						title={Platform.select({
-							ios: 'Tap here to open in Maps',
-							android: 'Tap here to open in Google Maps'
-						})}
-					/>
-				</MapView>
+				<WebView
+					containerStyle={{
+						flex: 0,
+						height: 300
+					}}
+					startInLoadingState
+					source={{
+						html: mapHTML([coords.longitude, coords.latitude])
+					}}
+				/>
 			</Card>
 		</ScrollView>
 	);
