@@ -4,7 +4,7 @@ import RoomList from '../components/roomList';
 import HouseList from '../components/houseList';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCityDataMutation } from '../store/services';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import PropertyLoader from '../components/propertyLoader';
 import { setLocation } from '../store/reducers/common.reducer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -12,6 +12,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 const Tab = createMaterialTopTabNavigator();
 
 const FindRental = () => {
+	const route = useRoute();
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
 	const { location } = useSelector(state => state.common);
@@ -47,6 +48,11 @@ const FindRental = () => {
 							textTransform: 'capitalize'
 						}
 					})}
+					initialRouteName={
+						route.params?.viewType === 'rooms'
+							? 'RoomList'
+							: 'HouseList'
+					}
 				>
 					<Tab.Screen
 						name='RoomList'

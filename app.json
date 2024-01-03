@@ -18,10 +18,14 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.cirtru.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +37,11 @@
           "photosPermission": "Cirtru accesses your photos to let you post your property."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "437317ae-2eea-47fc-8fc3-cb7e141c085b"
+      }
+    }
   }
 }

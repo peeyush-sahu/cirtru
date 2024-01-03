@@ -13,7 +13,7 @@ const PropertyCard = ({ rowItem, propertyType }) => {
 	tempItem.start = tempItem.start.split('/').join('-');
 	const tempDate = dayjs(tempItem?.start, 'MM-DD-YYYY');
 	const appendHttps = tempItem?.images?.thumbs.length
-		? tempItem?.images?.thumbs[0].split('//')[0] === 'https'
+		? tempItem?.images?.thumbs[0]?.split('//')[0] === 'https'
 		: false;
 	const availableText =
 		propertyType === 'houses'
