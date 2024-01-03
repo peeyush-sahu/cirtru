@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { View } from 'react-native';
 import { IconButton, Text } from 'react-native-paper';
 
 const Counter = () => {
+	const [count, setCount] = useState(1);
+
 	return (
 		<View
 			style={{
@@ -13,16 +16,16 @@ const Counter = () => {
 				size={12}
 				icon='minus'
 				mode='contained'
-				onPress={() => console.log('Pressed')}
+				onPress={() => setCount(c => Math.max(c - 1, 1))}
 			/>
 			<Text variant='labelLarge' style={{ marginHorizontal: 6 }}>
-				1
+				{count}
 			</Text>
 			<IconButton
 				size={12}
 				icon='plus'
 				mode='contained'
-				onPress={() => console.log('Pressed')}
+				onPress={() => setCount(c => Math.max(c + 1, 1))}
 			/>
 		</View>
 	);
