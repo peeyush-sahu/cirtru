@@ -16,23 +16,6 @@ const Settings = () => {
 		<>
 			<List.Section>
 				<List.Item
-					title='Dark Theme'
-					description='Set light or dark theme'
-					right={props => (
-						<Switch
-							{...props}
-							value={settings.isDark}
-							onValueChange={handleSwitchTheme}
-						/>
-					)}
-					left={props => (
-						<List.Icon {...props} icon='theme-light-dark' />
-					)}
-				/>
-			</List.Section>
-			<Divider />
-			<List.Section>
-				<List.Item
 					title='Notifications'
 					description='Allow app to send notifications'
 					left={props => <List.Icon {...props} icon='bell-check' />}
