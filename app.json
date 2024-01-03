@@ -19,6 +19,11 @@
     },
     "android": {
       "package": "com.cirtru.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDQAzXYWHkpeTbdV6JMAMXqWOQRjxeIe5E"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

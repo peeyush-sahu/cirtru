@@ -18,7 +18,7 @@ const CityItem = ({ city, viewType }) => {
 						state: city?.stateName
 					})
 				);
-				navigation.navigate('Listing', viewType);
+				navigation.navigate('Listing', { viewType });
 			}}
 		>
 			<Image
