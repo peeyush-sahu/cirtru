@@ -1,5 +1,6 @@
 import { store } from './store';
 import { Provider } from 'react-redux';
+import { StatusBar } from 'expo-status-bar';
 import { AppNavigator } from './utils/navigation';
 import { PaperProvider } from 'react-native-paper';
 import { CombinedDefaultTheme } from './utils/theme';
@@ -8,15 +9,18 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
 	return (
-		<GestureHandlerRootView style={{ flex: 1 }}>
-			<Provider store={store}>
-				<PaperProvider theme={CombinedDefaultTheme}>
-					<NavigationContainer theme={CombinedDefaultTheme}>
-						<AppNavigator />
-					</NavigationContainer>
-				</PaperProvider>
-			</Provider>
-		</GestureHandlerRootView>
+		<>
+			<StatusBar style='light' />
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<Provider store={store}>
+					<PaperProvider theme={CombinedDefaultTheme}>
+						<NavigationContainer theme={CombinedDefaultTheme}>
+							<AppNavigator />
+						</NavigationContainer>
+					</PaperProvider>
+				</Provider>
+			</GestureHandlerRootView>
+		</>
 	);
 };
 

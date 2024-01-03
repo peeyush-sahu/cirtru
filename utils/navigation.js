@@ -100,7 +100,9 @@ export const AppNavigator = () => {
 	return (
 		<AppStack.Navigator
 			initialRouteName='Tabs'
-			screenOptions={{ headerBackTitleVisible: false }}
+			screenOptions={{
+				headerBackTitleVisible: false
+			}}
 		>
 			<AppStack.Screen
 				name='Login'
